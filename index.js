@@ -1,5 +1,5 @@
 const POKEMON_API = "https://pokeapi.co/api/v2"
-const POKEMON_LIMIT = 12
+const POKEMON_LIMIT = 1
 let offset = 0
 
 const app = document.querySelector("#app")
@@ -47,8 +47,10 @@ const createCard = (pokemon) => {
     img.className = "cardImage"
     img.src = pokemon.sprites.other["official-artwork"]["front_default"]
     img.alt = "default images"
-    img.onclick = (event) => {
-        console.log(event);
+
+    
+    img.onclick = (e) => {
+        console.log(e);
         
     }
     //повесить событие при клике скурвть один блок показать второй
