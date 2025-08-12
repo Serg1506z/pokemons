@@ -1,5 +1,5 @@
 const POKEMON_API = "https://pokeapi.co/api/v2"
-const POKEMON_LIMIT = 12
+const POKEMON_LIMIT = 2
 let offset = 0
 
 const app = document.querySelector("#app")
@@ -37,15 +37,19 @@ const transformationId = (id) => {
 }
 
 // обработчик нажатий на ссылки
-let linksHandler = event =>  {
+let linksHandler = (event) => {
     // запрещаем дальнейший переход по ссылке
     event.preventDefault();
-    
-  // получаем запрошенный url
-  let url = new URL(event.currentTarget.href);
-  
-  // запускаем роутер, предавая ему path
-  Router.dispatch(url.pathname);
+
+    // получаем запрошенный url
+    let url = new URL(event.currentTarget.href);
+    console.log(event.currentTarget.href);
+    console.log(url);
+
+
+
+    // запускаем роутер, предавая ему path
+    Router.dispatch(url.pathname.replace("/C:", ""));
 }
 
 const createCard = (pokemon) => {
@@ -57,7 +61,7 @@ const createCard = (pokemon) => {
     let link = document.createElement('a');
     link.style.textDecoration = 'none';
     link.href = `/pokemons/${pokemon.id}`;
-    
+
     const img = document.createElement("img")
     img.className = "cardImage"
     img.src = pokemon.sprites.other["official-artwork"]["front_default"]
@@ -65,7 +69,7 @@ const createCard = (pokemon) => {
     // img.onclick = (event) => {
     //     console.log(event);   
     // }
-        
+
     //повесить событие при клике скурвть один блок показать второй
 
     link.append(img);
@@ -89,9 +93,9 @@ const createCard = (pokemon) => {
         // typeItem.className = item.type.name + " " + "pokemonType"
         typeItem.classList.add("pokemonType")
         typeItem.classList.add(item.type.name)
-        
+
         types.append(typeItem)
-       
+
     })
 
     card.append(link, id, name, types)
@@ -109,19 +113,67 @@ const ShowMainPage = () => {
     personalCardPokemon.style.display = "none"
 }
 
-const ShowInnerPokemonPage = async ({ id }) => {
-  console.log('ShowInnerPokemonPage', id);
-  // если хэша нет - добавляем его в историю
-  if (!window.location.href.match('#')) {
-    history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
-  }
 
-  container.style.display = "none"
-  personalCardPokemon.style.display = "flex"
+
+
+const ShowInnerPokemonPage = async ({ id }) => {
+    const pokemon = await getPokemonById(id)
+    console.log(pokemon);
+
+    const types = document.querySelector(".types")
+
+    const personalCardPokemonImage = document.querySelector("#personalCardPokemonImage")
+    personalCardPokemonImage.src = pokemon.sprites.other["official-artwork"]["front_default"]
+
+    const personalCardPokemonName = document.querySelector("#personalCardPokemonName")
+    personalCardPokemonName.innerHTML = pokemon.name
+
+    const personalCardPokemonId = document.querySelector("#personalCardPokemonId")
+    personalCardPokemonId.innerHTML = pokemon.id
+
+    //    const liParamCategoty = document.querySelector("#liParamCategoty")
+    //    const liParamAbility = document.querySelector("#liParamAbility")
+    //     liParamAbility.innerHTML = pokemon.abilities.name
+    personalCardPokemonName.innerHTML = capitalizeFirstLetter(pokemon.name)
+    personalCardPokemonId.innerHTML = transformationId(pokemon.id)
+
+ pokemon.types.forEach((item) => {
+        const typeItem = document.createElement("div")
+        // typeItem.className = "typeItem"
+        typeItem.innerHTML = item.type.name
+        // typeItem.className = item.type.name + " " + "pokemonType"
+        typeItem.classList.add("pokemonType")
+        typeItem.classList.add(item.type.name)
+
+        types.append(typeItem)
+
+    })
+
+   const liParamHeight =document.querySelector("#liParamHeight")
+    liParamHeight.innerHTML = pokemon.height
+
+   const liParamWeight =document.querySelector("#liParamWeight")
+   liParamWeight.innerHTML = pokemon.weight
+
+    console.log('ShowInnerPokemonPage', id);
+    // если хэша нет - добавляем его в историю
+    if (!window.location.href.match('#')) {
+        history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
+    }
+
+    container.style.display = "none"
+    personalCardPokemon.style.display = "flex"
+
 };
 
 const fetchPokemonData = async (url) => {
     const res = await fetch(url)
+
+    return await res.json()
+}
+
+const getPokemonById = async (id) => {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
 
     return await res.json()
 }
@@ -154,11 +206,11 @@ const getAllPokemons = async (offset) => {
 }
 
 if (window.location.href.match('#')) {
-  const pokemonId = getPokemonIdFromUrl(window.location.href);
+    const pokemonId = getPokemonIdFromUrl(window.location.href);
 
-  ShowInnerPokemonPage({ id: pokemonId });
+    ShowInnerPokemonPage({ id: pokemonId });
 } else {
-  getAllPokemons(offset)
+    getAllPokemons(offset)
 }
 
 
