@@ -1,6 +1,7 @@
 const POKEMON_API = "https://pokeapi.co/api/v2"
-const POKEMON_LIMIT = 2
+const POKEMON_LIMIT = 12
 let offset = 0
+const countSpecificationsItem = 15
 
 const app = document.querySelector("#app")
 const container = document.createElement("div")
@@ -53,7 +54,7 @@ let linksHandler = (event) => {
 }
 
 const createCard = (pokemon) => {
-    // console.log(pokemon);
+    console.log(pokemon);
 
     const card = document.createElement("div")
     card.className = "card"
@@ -113,10 +114,69 @@ const ShowMainPage = () => {
     personalCardPokemon.style.display = "none"
 }
 
+//    <section class="specifications">
+//                                 <div class="specificationsItems">
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsItem"></div>
+//                                     <div class="specificationsTitle">stats[0].stat.name</div>
+//                                     <div class="specificationsTitle">stats[0].base_stat</div>
+//                                 </div>
+
+
+
+const renderStatistics = (data) => {
+
+    const statistics = document.querySelector(".statistics")
+
+    const section = document.createElement("section")
+    section.className = "specifications"
+
+    data.stats.forEach((item, index)=> {
+        const specificationsItems = document.createElement("div")
+        specificationsItems.className = "specificationsItems"
+
+        for (let index = 0; index < countSpecificationsItem; index++) {
+            const specificationsItem = document.createElement("div")
+            specificationsItem.className = "specificationsItem"
+            //если мы находимся на 4 итерации то красим палочку
+            if(index <= 6){
+                specificationsItem.style.backgroundColor = "#30a7d7"
+            }
+
+            specificationsItems.append(specificationsItem)
+        }
+
+        const specificationsTitle = document.createElement("div")
+        specificationsTitle.className = "specificationsTitle"
+        specificationsTitle.innerHTML = data.stats[index].stat.name
+        // specificationsTitle.innerHTML = item.stat.name
+
+        specificationsItems.append(specificationsTitle)
+        section.append(specificationsItems)
+    });
+    //--------------------------------------
+
+    //--------------------------------------
+    statistics.append(section)
+}
 
 
 
 const ShowInnerPokemonPage = async ({ id }) => {
+    const personalType = document.querySelector(".personalType")
     const pokemon = await getPokemonById(id)
     console.log(pokemon);
 
@@ -137,7 +197,7 @@ const ShowInnerPokemonPage = async ({ id }) => {
     personalCardPokemonName.innerHTML = capitalizeFirstLetter(pokemon.name)
     personalCardPokemonId.innerHTML = transformationId(pokemon.id)
 
- pokemon.types.forEach((item) => {
+    pokemon.types.forEach((item) => {
         const typeItem = document.createElement("div")
         // typeItem.className = "typeItem"
         typeItem.innerHTML = item.type.name
@@ -145,15 +205,17 @@ const ShowInnerPokemonPage = async ({ id }) => {
         typeItem.classList.add("pokemonType")
         typeItem.classList.add(item.type.name)
 
-        types.append(typeItem)
+        personalType.append(typeItem)
 
     })
 
-   const liParamHeight =document.querySelector("#liParamHeight")
+    const liParamHeight = document.querySelector("#liParamHeight")
     liParamHeight.innerHTML = pokemon.height
 
-   const liParamWeight =document.querySelector("#liParamWeight")
-   liParamWeight.innerHTML = pokemon.weight
+    const liParamWeight = document.querySelector("#liParamWeight")
+    liParamWeight.innerHTML = pokemon.weight
+
+    renderStatistics(pokemon)
 
     console.log('ShowInnerPokemonPage', id);
     // если хэша нет - добавляем его в историю
@@ -204,6 +266,8 @@ const getAllPokemons = async (offset) => {
         createCard(pokemon.value)
     })
 }
+
+
 
 if (window.location.href.match('#')) {
     const pokemonId = getPokemonIdFromUrl(window.location.href);

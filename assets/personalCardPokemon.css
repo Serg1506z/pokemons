@@ -229,7 +229,7 @@ ul {
     margin-left: 100px;
 }
 
-.types {
+.personalType {
     display: flex;
     gap: 13px;
     flex-wrap: wrap;
@@ -238,6 +238,7 @@ ul {
 .typeTitle {
     width: 100%;
     margin: 0;
+    margin-bottom: 10px;
     font-weight: normal;
 }
 
