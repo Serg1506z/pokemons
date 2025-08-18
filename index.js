@@ -1,5 +1,5 @@
 const POKEMON_API = "https://pokeapi.co/api/v2"
-const POKEMON_LIMIT = 1
+const POKEMON_LIMIT = 12
 let offset = 0
 
 const app = document.querySelector("#app")
