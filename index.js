@@ -137,22 +137,35 @@ const ShowMainPage = () => {
 
 
 
+
+
+
 const renderStatistics = (data) => {
+
+
 
     const statistics = document.querySelector(".statistics")
 
     const section = document.createElement("section")
     section.className = "specifications"
 
-    data.stats.forEach((item, index)=> {
+    data.stats.forEach((item, index) => {
         const specificationsItems = document.createElement("div")
         specificationsItems.className = "specificationsItems"
 
-        for (let index = 0; index < countSpecificationsItem; index++) {
+        function renderSpecificationsItems(data) {
+            const a = data.stats[index]["base_stat"] * 100 / 200
+            const b = Math.round(a / 100 * countSpecificationsItem)
+
+            return b
+        }
+
+
+        for (let index = countSpecificationsItem; index >= 0; index--) {
             const specificationsItem = document.createElement("div")
             specificationsItem.className = "specificationsItem"
             //если мы находимся на 4 итерации то красим палочку
-            if(index <= 6){
+            if (index <= renderSpecificationsItems(data)) {
                 specificationsItem.style.backgroundColor = "#30a7d7"
             }
 
@@ -179,6 +192,7 @@ const ShowInnerPokemonPage = async ({ id }) => {
     const personalType = document.querySelector(".personalType")
     const pokemon = await getPokemonById(id)
     console.log(pokemon);
+
 
     const types = document.querySelector(".types")
 
