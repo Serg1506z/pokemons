@@ -142,33 +142,33 @@ const ShowMainPage = () => {
 
 const renderStatistics = (data) => {
 
-
-
     const statistics = document.querySelector(".statistics")
 
     const section = document.createElement("section")
     section.className = "specifications"
 
+    function renderSpecificationsItems(data, index) {
+
+        console.log(data, index);
+        
+        const a = data.stats[index]["base_stat"] * 100 / 200
+        const b = Math.round(a / 100 * countSpecificationsItem)
+
+        return b
+    }
+
     data.stats.forEach((item, index) => {
         const specificationsItems = document.createElement("div")
         specificationsItems.className = "specificationsItems"
 
-        function renderSpecificationsItems(data) {
-            const a = data.stats[index]["base_stat"] * 100 / 200
-            const b = Math.round(a / 100 * countSpecificationsItem)
 
-            return b
-        }
-
-
-        for (let index = countSpecificationsItem; index >= 0; index--) {
+        for (let i = countSpecificationsItem; i >= 0; i--) {
             const specificationsItem = document.createElement("div")
             specificationsItem.className = "specificationsItem"
             //если мы находимся на 4 итерации то красим палочку
-            if (index <= renderSpecificationsItems(data)) {
+            if (i <= renderSpecificationsItems(data, index)) {
                 specificationsItem.style.backgroundColor = "#30a7d7"
             }
-
             specificationsItems.append(specificationsItem)
         }
 
